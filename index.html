@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bluetooth Car Control</title>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 50px; }
+    button { font-size: 20px; margin: 10px; padding: 15px 30px; }
+  </style>
+</head>
+<body>
+  <h2>🚗 Bluetooth Car Control</h2>
+  <button onclick="connect()">🔗 Connect Bluetooth</button><br><br>
+  <button onclick="sendCommand('F')">⬆ Forward</button><br>
+  <button onclick="sendCommand('L')">⬅ Left</button>
+  <button onclick="sendCommand('S')">⏹ Stop</button>
+  <button onclick="sendCommand('R')">➡ Right</button><br>
+  <button onclick="sendCommand('B')">⬇ Backward</button>
+
+  <script>
+    let bluetoothDevice;
+    let writer;
+
+    async function connect() {
+      try {
+        bluetoothDevice = await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true,
+          optionalServices: [0x1101] // Serial Port UUID
+        });
+        const server = await bluetoothDevice.gatt.connect();
+        const service = await server.getPrimaryService(0x1101);
+        const characteristic = await service.getCharacteristic("00002a00-0000-1000-8000-00805f9b34fb");
+        writer = characteristic;
+        alert("✅ Connected to " + bluetoothDevice.name);
+      } catch (error) {
+        alert("❌ Connection failed: " + error);
+      }
+    }
+
+    async function sendCommand(cmd) {
+      if (!writer) {
+        alert("⚠ Please connect first!");
+        return;
+      }
+      const encoder = new TextEncoder();
+      await writer.writeValue(encoder.encode(cmd));
+    }
+  </script>
+</body>
+</html>
