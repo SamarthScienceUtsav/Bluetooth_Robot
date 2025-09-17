@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bluetooth Robot Controller</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap');
+
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Press Start 2P', cursive, sans-serif;
+      font-family: 'Poppins', sans-serif;
       text-align: center;
       background-color: #FFD93D;
       display: flex;
@@ -19,26 +21,30 @@
 
     h1 {
       margin-top: 20px;
-      font-size: 22px;
+      font-size: 24px;
+      font-weight: 700;
       color: black;
+      line-height: 1.4;
     }
 
     #log {
       background: #fff;
       margin: 10px auto;
       padding: 10px;
-      width: 80%;
+      width: 85%;
       height: 80px;
       overflow-y: auto;
       border-radius: 8px;
-      font-size: 12px;
+      font-size: 13px;
       text-align: left;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
     button.connect-btn {
       margin: 10px auto;
-      padding: 12px 25px;
-      font-size: 14px;
+      padding: 14px 30px;
+      font-size: 15px;
+      font-weight: 600;
       background-color: #4A6CF7;
       color: white;
       border: none;
@@ -47,6 +53,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
     button.connect-btn:hover {
@@ -68,35 +75,39 @@
       height: 80px;
       background: white;
       border: 2px solid #ddd;
-      border-radius: 10px;
-      font-size: 30px;
+      border-radius: 12px;
+      font-size: 32px;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.1s ease-in-out;
     }
 
     .btn:active {
       background: #eee;
+      transform: scale(0.95);
     }
 
     .center-btn {
       background: black;
       border-radius: 50%;
       color: white;
-      font-size: 30px;
+      font-size: 28px;
+      font-weight: bold;
     }
 
     footer {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
       margin-bottom: 15px;
     }
 
     footer img {
-      height: 50px;
+      height: 55px;
     }
   </style>
 </head>
@@ -121,9 +132,9 @@
   </div>
 
   <footer>
-    <img src="https://i.ibb.co/0cZpzXz/18.png" alt="ScienceUtsav">
+    <img src="scienceutsav.png" alt="ScienceUtsav">
     <span style="font-size: 22px; font-weight: bold;">×</span>
-    <img src="https://i.ibb.co/ZVxFptb/19.png" alt="RoboScientist">
+    <img src="roboscientist.png" alt="RoboScientist">
   </footer>
 
   <script>
@@ -131,7 +142,9 @@
     let txCharacteristic;
 
     function log(message) {
-      document.getElementById('log').innerHTML += message + "<br>";
+      const logBox = document.getElementById('log');
+      logBox.innerHTML += message + "<br>";
+      logBox.scrollTop = logBox.scrollHeight; // auto scroll
     }
 
     async function connectBluetooth() {
@@ -146,22 +159,21 @@
         const server = await bluetoothDevice.gatt.connect();
         const service = await server.getPrimaryService('0000ffe0-0000-1000-8000-00805f9b34fb');
         txCharacteristic = await service.getCharacteristic('0000ffe1-0000-1000-8000-00805f9b34fb');
-        log("Connected!");
+        log("✅ Connected!");
       } catch (error) {
-        log("Error: " + error);
+        log("❌ Error: " + error);
       }
     }
 
     async function sendCommand(command) {
       if (!txCharacteristic) {
-        log("Not connected!");
+        log("⚠ Not connected!");
         return;
       }
       let encoder = new TextEncoder();
       await txCharacteristic.writeValue(encoder.encode(command));
-      log("Sent: " + command);
+      log("➡ Sent: " + command);
     }
   </script>
 </body>
 </html>
-
