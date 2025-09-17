@@ -17,26 +17,28 @@
       cursor: pointer;
       transition: 0.3s;
     }
-    button:hover {
-      background: #0d47a1;
-    }
-    #stop {
-      background: #e64a19;
-    }
-    #stop:hover {
-      background: #bf360c;
-    }
+    button:hover { background: #0d47a1; }
+    #stop { background: #e64a19; }
+    #stop:hover { background: #bf360c; }
   </style>
 </head>
 <body>
   <h2>🚗 Bluetooth Car Control</h2>
   <button onclick="connect()">🔗 Connect Bluetooth</button><br><br>
 
-  <button onclick="sendCommand('F')">⬆ Forward</button><br>
-  <button onclick="sendCommand('L')">⬅ Left</button>
+  <button onmousedown="sendCommand('F')" onmouseup="sendCommand('S')" 
+          ontouchstart="sendCommand('F')" ontouchend="sendCommand('S')">⬆ Forward</button><br>
+
+  <button onmousedown="sendCommand('L')" onmouseup="sendCommand('S')" 
+          ontouchstart="sendCommand('L')" ontouchend="sendCommand('S')">⬅ Left</button>
+
   <button id="stop" onclick="sendCommand('S')">⏹ Stop</button>
-  <button onclick="sendCommand('R')">➡ Right</button><br>
-  <button onclick="sendCommand('B')">⬇ Backward</button>
+
+  <button onmousedown="sendCommand('R')" onmouseup="sendCommand('S')" 
+          ontouchstart="sendCommand('R')" ontouchend="sendCommand('S')">➡ Right</button><br>
+
+  <button onmousedown="sendCommand('B')" onmouseup="sendCommand('S')" 
+          ontouchstart="sendCommand('B')" ontouchend="sendCommand('S')">⬇ Backward</button>
 
   <script>
     let device, server, service, characteristic;
@@ -44,7 +46,7 @@
     async function connect() {
       try {
         device = await navigator.bluetooth.requestDevice({
-          filters: [{ namePrefix: "HMSoft" }], // HM-10 usually appears as HMSoft
+          filters: [{ namePrefix: "HMSoft" }], // HM10 modules usually appear as HMSoft
           optionalServices: ['0000ffe0-0000-1000-8000-00805f9b34fb']
         });
 
@@ -65,6 +67,7 @@
       }
       const encoder = new TextEncoder();
       await characteristic.writeValue(encoder.encode(cmd));
+      console.log("Sent:", cmd);
     }
   </script>
 </body>
