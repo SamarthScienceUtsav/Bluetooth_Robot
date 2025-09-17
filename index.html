@@ -1,48 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Bluetooth Car Control</title>
   <style>
-    body { font-family: Arial; text-align: center; margin-top: 50px; }
-    button { font-size: 20px; margin: 10px; padding: 15px 30px; }
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background: #f4f4f4; }
+    h2 { color: #d32f2f; }
+    button {
+      font-size: 20px;
+      margin: 10px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      background: #1976d2;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #0d47a1;
+    }
+    #stop {
+      background: #e64a19;
+    }
+    #stop:hover {
+      background: #bf360c;
+    }
   </style>
 </head>
 <body>
   <h2>🚗 Bluetooth Car Control</h2>
   <button onclick="connect()">🔗 Connect Bluetooth</button><br><br>
+
   <button onclick="sendCommand('F')">⬆ Forward</button><br>
   <button onclick="sendCommand('L')">⬅ Left</button>
-  <button onclick="sendCommand('S')">⏹ Stop</button>
+  <button id="stop" onclick="sendCommand('S')">⏹ Stop</button>
   <button onclick="sendCommand('R')">➡ Right</button><br>
   <button onclick="sendCommand('B')">⬇ Backward</button>
 
   <script>
-    let bluetoothDevice;
-    let writer;
+    let device, server, service, characteristic;
 
     async function connect() {
       try {
-        bluetoothDevice = await navigator.bluetooth.requestDevice({
-          acceptAllDevices: true,
-          optionalServices: [0x1101] // Serial Port UUID
+        device = await navigator.bluetooth.requestDevice({
+          filters: [{ namePrefix: "HMSoft" }], // HM-10 usually appears as HMSoft
+          optionalServices: ['0000ffe0-0000-1000-8000-00805f9b34fb']
         });
-        const server = await bluetoothDevice.gatt.connect();
-        const service = await server.getPrimaryService(0x1101);
-        const characteristic = await service.getCharacteristic("00002a00-0000-1000-8000-00805f9b34fb");
-        writer = characteristic;
-        alert("✅ Connected to " + bluetoothDevice.name);
+
+        server = await device.gatt.connect();
+        service = await server.getPrimaryService('0000ffe0-0000-1000-8000-00805f9b34fb');
+        characteristic = await service.getCharacteristic('0000ffe1-0000-1000-8000-00805f9b34fb');
+
+        alert("✅ Connected to " + device.name);
       } catch (error) {
         alert("❌ Connection failed: " + error);
       }
     }
 
     async function sendCommand(cmd) {
-      if (!writer) {
+      if (!characteristic) {
         alert("⚠ Please connect first!");
         return;
       }
       const encoder = new TextEncoder();
-      await writer.writeValue(encoder.encode(cmd));
+      await characteristic.writeValue(encoder.encode(cmd));
     }
   </script>
 </body>
