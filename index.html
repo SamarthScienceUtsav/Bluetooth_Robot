@@ -2,107 +2,137 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Bluetooth Car Control</title>
+  <title>Bluetooth Robot Controller</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial Black', sans-serif;
       text-align: center;
-      background: linear-gradient(135deg, #eceff1, #cfd8dc);
-      height: 100vh;
       margin: 0;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      justify-content: space-between;
+      background: #FFD83B; /* Yellow background */
     }
 
     h2 {
-      color: #263238;
-      margin-bottom: 20px;
-      font-size: 2em;
+      margin-top: 20px;
+      font-size: 28px;
+      color: #000;
+      text-shadow: 2px 2px #fff4;
     }
 
-    .btn-connect {
-      font-size: 1.2em;
-      margin-bottom: 30px;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 10px;
-      background: #1976d2;
+    /* Connect Button */
+    #connectBtn {
+      background: #3b82f6;
       color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
       cursor: pointer;
+      margin: 10px auto;
+      display: block;
       transition: 0.3s;
-      box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
     }
-    .btn-connect:hover { background: #0d47a1; }
+    #connectBtn:hover {
+      background: #1e40af;
+    }
 
-    .controls {
+    /* Controller Grid */
+    .controller {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      gap: 4vw;
-      width: 90vw;
-      max-width: 500px;
-      height: 90vw;
-      max-height: 500px;
-    }
-
-    .control-btn {
-      font-size: 12vw;
-      border: none;
-      border-radius: 20px;
-      background: #1976d2;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0px 4px 8px rgba(0,0,0,0.25);
-      display: flex;
-      align-items: center;
+      grid-template-columns: 80px 80px 80px;
+      grid-template-rows: 80px 80px 80px;
+      gap: 15px;
       justify-content: center;
+      align-items: center;
+      margin: auto;
     }
-    .control-btn:hover { background: #0d47a1; }
 
-    .stop-btn {
-      background: #e64a19;
-      font-size: 10vw;
+    button {
+      font-size: 32px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: 0.2s;
     }
-    .stop-btn:hover { background: #bf360c; }
+    button:active {
+      background: #ddd;
+      transform: scale(0.95);
+    }
 
-    /* Grid placement */
-    .up { grid-column: 2; grid-row: 1; }
-    .left { grid-column: 1; grid-row: 2; }
-    .stop { grid-column: 2; grid-row: 2; }
-    .right { grid-column: 3; grid-row: 2; }
-    .down { grid-column: 2; grid-row: 3; }
+    #stop {
+      background: #000;
+      color: white;
+      font-size: 28px;
+    }
 
-    @media (min-width: 600px) {
-      .control-btn { font-size: 60px; }
-      .stop-btn { font-size: 50px; }
+    /* Footer Logos */
+    .footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      gap: 15px;
+      background: #FFD83B;
+    }
+    .footer img {
+      height: 50px;
+      object-fit: contain;
+    }
+
+    @media (max-width: 600px) {
+      .controller {
+        grid-template-columns: 60px 60px 60px;
+        grid-template-rows: 60px 60px 60px;
+        gap: 10px;
+      }
+      button {
+        font-size: 24px;
+      }
+      #connectBtn {
+        font-size: 16px;
+        padding: 12px 20px;
+      }
+      .footer img {
+        height: 40px;
+      }
     }
   </style>
 </head>
 <body>
-  <h2>🚗 Bluetooth Car Control</h2>
-  <button class="btn-connect" onclick="connect()">🔗 Connect Bluetooth</button>
+  <h2>Bluetooth Robot Controller</h2>
+  <button id="connectBtn" onclick="connect()">🔗 Connect Bluetooth</button>
 
-  <div class="controls">
-    <button class="control-btn up" 
-      onmousedown="sendCommand('F')" onmouseup="sendCommand('S')"
-      ontouchstart="sendCommand('F')" ontouchend="sendCommand('S')">⬆</button>
+  <!-- Controller -->
+  <div class="controller">
+    <div></div>
+    <button onmousedown="sendCommand('F')" onmouseup="sendCommand('S')" 
+            ontouchstart="sendCommand('F')" ontouchend="sendCommand('S')">⬆</button>
+    <div></div>
 
-    <button class="control-btn left" 
-      onmousedown="sendCommand('L')" onmouseup="sendCommand('S')"
-      ontouchstart="sendCommand('L')" ontouchend="sendCommand('S')">⬅</button>
+    <button onmousedown="sendCommand('L')" onmouseup="sendCommand('S')" 
+            ontouchstart="sendCommand('L')" ontouchend="sendCommand('S')">⬅</button>
+    <button id="stop" onclick="sendCommand('S')">⏹</button>
+    <button onmousedown="sendCommand('R')" onmouseup="sendCommand('S')" 
+            ontouchstart="sendCommand('R')" ontouchend="sendCommand('S')">➡</button>
 
-    <button class="control-btn stop stop-btn" onclick="sendCommand('S')">⏹</button>
+    <div></div>
+    <button onmousedown="sendCommand('B')" onmouseup="sendCommand('S')" 
+            ontouchstart="sendCommand('B')" ontouchend="sendCommand('S')">⬇</button>
+    <div></div>
+  </div>
 
-    <button class="control-btn right" 
-      onmousedown="sendCommand('R')" onmouseup="sendCommand('S')"
-      ontouchstart="sendCommand('R')" ontouchend="sendCommand('S')">➡</button>
-
-    <button class="control-btn down" 
-      onmousedown="sendCommand('B')" onmouseup="sendCommand('S')"
-      ontouchstart="sendCommand('B')" ontouchend="sendCommand('S')">⬇</button>
+  <!-- Footer Logos -->
+  <div class="footer">
+    <img src="d8626d8b-a37b-4d34-82da-d8ec27859286.png" alt="ScienceUtsav Logo">
+    <span style="font-size:22px; font-weight:bold;">×</span>
+    <img src="1ec9c705-3ce2-4a59-ad2b-5b2044045ae6.png" alt="Roboscientist Logo">
   </div>
 
   <script>
