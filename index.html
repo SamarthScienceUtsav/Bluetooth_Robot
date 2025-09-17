@@ -4,41 +4,97 @@
   <meta charset="utf-8">
   <title>Bluetooth Car Control</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background: #f4f4f4; }
-    h2 { color: #d32f2f; }
-    button {
-      font-size: 20px;
-      margin: 10px;
-      padding: 15px 30px;
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #eceff1, #cfd8dc);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h2 {
+      color: #263238;
+      margin-bottom: 20px;
+    }
+
+    .btn-connect {
+      font-size: 18px;
+      margin-bottom: 30px;
+      padding: 12px 25px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       background: #1976d2;
       color: white;
       cursor: pointer;
       transition: 0.3s;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
     }
-    button:hover { background: #0d47a1; }
-    #stop { background: #e64a19; }
-    #stop:hover { background: #bf360c; }
+    .btn-connect:hover { background: #0d47a1; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 100px 100px 100px;
+      grid-template-rows: 100px 100px 100px;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .control-btn {
+      font-size: 40px;
+      width: 100px;
+      height: 100px;
+      border: none;
+      border-radius: 20px;
+      background: #1976d2;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.25);
+    }
+    .control-btn:hover { background: #0d47a1; }
+
+    .stop-btn {
+      font-size: 35px;
+      background: #e64a19;
+    }
+    .stop-btn:hover { background: #bf360c; }
+
+    /* Place arrows in a D-pad style */
+    .up { grid-column: 2; grid-row: 1; }
+    .left { grid-column: 1; grid-row: 2; }
+    .stop { grid-column: 2; grid-row: 2; }
+    .right { grid-column: 3; grid-row: 2; }
+    .down { grid-column: 2; grid-row: 3; }
   </style>
 </head>
 <body>
   <h2>🚗 Bluetooth Car Control</h2>
-  <button onclick="connect()">🔗 Connect Bluetooth</button><br><br>
+  <button class="btn-connect" onclick="connect()">🔗 Connect Bluetooth</button>
 
-  <button onmousedown="sendCommand('F')" onmouseup="sendCommand('S')" 
-          ontouchstart="sendCommand('F')" ontouchend="sendCommand('S')">⬆ Forward</button><br>
+  <div class="controls">
+    <button class="control-btn up" 
+      onmousedown="sendCommand('F')" onmouseup="sendCommand('S')"
+      ontouchstart="sendCommand('F')" ontouchend="sendCommand('S')">⬆</button>
 
-  <button onmousedown="sendCommand('L')" onmouseup="sendCommand('S')" 
-          ontouchstart="sendCommand('L')" ontouchend="sendCommand('S')">⬅ Left</button>
+    <button class="control-btn left" 
+      onmousedown="sendCommand('L')" onmouseup="sendCommand('S')"
+      ontouchstart="sendCommand('L')" ontouchend="sendCommand('S')">⬅</button>
 
-  <button id="stop" onclick="sendCommand('S')">⏹ Stop</button>
+    <button class="control-btn stop stop-btn" onclick="sendCommand('S')">⏹</button>
 
-  <button onmousedown="sendCommand('R')" onmouseup="sendCommand('S')" 
-          ontouchstart="sendCommand('R')" ontouchend="sendCommand('S')">➡ Right</button><br>
+    <button class="control-btn right" 
+      onmousedown="sendCommand('R')" onmouseup="sendCommand('S')"
+      ontouchstart="sendCommand('R')" ontouchend="sendCommand('S')">➡</button>
 
-  <button onmousedown="sendCommand('B')" onmouseup="sendCommand('S')" 
-          ontouchstart="sendCommand('B')" ontouchend="sendCommand('S')">⬇ Backward</button>
+    <button class="control-btn down" 
+      onmousedown="sendCommand('B')" onmouseup="sendCommand('S')"
+      ontouchstart="sendCommand('B')" ontouchend="sendCommand('S')">⬇</button>
+  </div>
 
   <script>
     let device, server, service, characteristic;
@@ -46,7 +102,7 @@
     async function connect() {
       try {
         device = await navigator.bluetooth.requestDevice({
-          filters: [{ namePrefix: "HMSoft" }], // HM10 modules usually appear as HMSoft
+          filters: [{ namePrefix: "HMSoft" }],
           optionalServices: ['0000ffe0-0000-1000-8000-00805f9b34fb']
         });
 
