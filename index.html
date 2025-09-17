@@ -19,8 +19,21 @@
       height: 100vh;
     }
 
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 15px;
+    }
+
+    header img {
+      height: 75px; /* 55px + 20px */
+      width: auto;
+    }
+
     h1 {
-      margin-top: 20px;
+      margin-top: 5px;
       font-size: 24px;
       font-weight: 700;
       color: black;
@@ -99,19 +112,33 @@
     }
 
     footer {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
+      background: #fff;
+      padding: 15px;
+      border-top: 2px solid #ccc;
+      font-size: 14px;
+      text-align: center;
+      line-height: 1.6;
     }
 
-    footer img {
-      height: 55px;
+    footer a {
+      color: #4A6CF7;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
+
+  <!-- Header with logos -->
+  <header>
+    <img src="scienceutsav.png" alt="ScienceUtsav">
+    <span style="font-size: 22px; font-weight: bold;">×</span>
+    <img src="roboscientist.png" alt="RoboScientist">
+  </header>
 
   <h1>Bluetooth Robot<br>Controller</h1>
 
@@ -131,10 +158,12 @@
     <div></div>
   </div>
 
+  <!-- Footer with contact details -->
   <footer>
-    <img src="scienceutsav.png" alt="ScienceUtsav">
-    <span style="font-size: 22px; font-weight: bold;">×</span>
-    <img src="roboscientist.png" alt="RoboScientist">
+    <p><strong>Visit our website:</strong> <a href="http://scienceutsav.com" target="_blank">scienceutsav.com</a></p>
+    <p><strong>Checkout our Store:</strong> <a href="https://scienceutsavstore.com/" target="_blank">scienceutsavstore.com</a></p>
+    <p><strong>Contact Details:</strong></p>
+    <p>📞 8105162640 | ✉️ <a href="mailto:info@scienceutsav.com">info@scienceutsav.com</a></p>
   </footer>
 
   <script>
@@ -144,7 +173,7 @@
     function log(message) {
       const logBox = document.getElementById('log');
       logBox.innerHTML += message + "<br>";
-      logBox.scrollTop = logBox.scrollHeight; // auto scroll
+      logBox.scrollTop = logBox.scrollHeight;
     }
 
     async function connectBluetooth() {
