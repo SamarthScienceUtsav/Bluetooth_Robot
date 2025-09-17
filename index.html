@@ -170,71 +170,88 @@
     <p>📞 8105162640 | ✉️ <a href="mailto:info@scienceutsav.com">info@scienceutsav.com</a></p>
   </footer>
   <script>
-    let bluetoothDevice;
-    let server;
-    let service;
-    let characteristic;
+   let bluetoothDevice;
+let server;
+let service;
+let characteristic;
 
-    async function connectBluetooth() {
-        try {
-            bluetoothDevice = await navigator.bluetooth.requestDevice({
-                acceptAllDevices: true,
-                optionalServices: ['0000ffe0-0000-1000-8000-00805f9b34fb'] 
-            });
+async function connectBluetooth() {
+    try {
+        bluetoothDevice = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: ['0000ffe0-0000-1000-8000-00805f9b34fb']
+        });
 
-            server = await bluetoothDevice.gatt.connect();
-            service = await server.getPrimaryService('0000ffe0-0000-1000-8000-00805f9b34fb');
-            characteristic = await service.getCharacteristic('0000ffe1-0000-1000-8000-00805f9b34fb');
-            logMessage("✅ Bluetooth Connected");
-        } catch (error) {
-            logMessage("❌ Connection failed: " + error);
-        }
+        server = await bluetoothDevice.gatt.connect();
+        service = await server.getPrimaryService('0000ffe0-0000-1000-8000-00805f9b34fb');
+        characteristic = await service.getCharacteristic('0000ffe1-0000-1000-8000-00805f9b34fb');
+        logMessage("✅ Bluetooth Connected");
+    } catch (error) {
+        logMessage("❌ Connection failed: " + error);
     }
+}
 
-    function logMessage(message) {
-        const log = document.getElementById("log");
-        log.textContent = message;
+function logMessage(message) {
+    const log = document.getElementById("log");
+    log.textContent = message;
+}
+
+async function sendCommand(command) {
+    if (!characteristic) {
+        logMessage("⚠️ Bluetooth not connected");
+        return;
     }
-
-    async function sendCommand(command) {
-        if (!characteristic) {
-            logMessage("⚠️ Bluetooth not connected");
-            return;
-        }
+    try {
         let encoder = new TextEncoder();
         await characteristic.writeValue(encoder.encode(command));
         logMessage("➡️ Sent: " + command);
+    } catch (err) {
+        logMessage("❌ Failed to send: " + err);
     }
+}
 
-    // --- Hold-to-Run Button Setup ---
-    function setupControl(buttonId, command) {
-        const btn = document.getElementById(buttonId);
+// --- Hold-to-Run Button Setup ---
+function setupControl(buttonId, command) {
+    const btn = document.getElementById(buttonId);
 
-        // On press → send movement command
-        btn.addEventListener("mousedown", () => sendCommand(command));
-        btn.addEventListener("touchstart", (e) => {
-            e.preventDefault();
-            sendCommand(command);
-        }, { passive: false });
+    let holdActive = false; // track if the button is being held
 
-        // On release → always send Stop (S)
-        btn.addEventListener("mouseup", () => sendCommand("S"));
-        btn.addEventListener("mouseleave", () => sendCommand("S")); // safety if cursor leaves
-        btn.addEventListener("touchend", () => sendCommand("S"));
-        btn.addEventListener("touchcancel", () => sendCommand("S")); // safety for touch
-    }
+    const sendStop = () => {
+        if (holdActive) {
+            holdActive = false;
+            sendCommand("S");
+        }
+    };
 
-    document.addEventListener("DOMContentLoaded", () => {
-        setupControl("forward", "F");
-        setupControl("backward", "B");
-        setupControl("left", "L");
-        setupControl("right", "R");
-
-        // Stop button → instant stop on click
-        document.getElementById("stop").addEventListener("click", () => sendCommand("S"));
+    btn.addEventListener("mousedown", () => {
+        holdActive = true;
+        sendCommand(command);
     });
+    btn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        holdActive = true;
+        sendCommand(command);
+    }, { passive: false });
+
+    btn.addEventListener("mouseup", sendStop);
+    btn.addEventListener("mouseleave", sendStop); // safety if cursor leaves
+    btn.addEventListener("touchend", sendStop);
+    btn.addEventListener("touchcancel", sendStop);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupControl("forward", "F");
+    setupControl("backward", "B");
+    setupControl("left", "L");
+    setupControl("right", "R");
+
+    // Stop button → instant stop on click
+    document.getElementById("stop").addEventListener("click", () => sendCommand("S"));
+});
+
 </script>
 </body>
 </html>
+
 
 
