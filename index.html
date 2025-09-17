@@ -206,17 +206,22 @@
         logMessage("➡️ Sent: " + command);
     }
 
-    // --- Add Hold-to-Run Events ---
+    // --- Hold-to-Run Button Setup ---
     function setupControl(buttonId, command) {
         const btn = document.getElementById(buttonId);
 
+        // On press → send movement command
         btn.addEventListener("mousedown", () => sendCommand(command));
-        btn.addEventListener("mouseup", () => sendCommand("S"));  // stop on release
         btn.addEventListener("touchstart", (e) => {
             e.preventDefault();
             sendCommand(command);
         }, { passive: false });
+
+        // On release → always send Stop (S)
+        btn.addEventListener("mouseup", () => sendCommand("S"));
+        btn.addEventListener("mouseleave", () => sendCommand("S")); // safety if cursor leaves
         btn.addEventListener("touchend", () => sendCommand("S"));
+        btn.addEventListener("touchcancel", () => sendCommand("S")); // safety for touch
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -224,9 +229,12 @@
         setupControl("backward", "B");
         setupControl("left", "L");
         setupControl("right", "R");
-        setupControl("stop", "S"); // stop button (tap works instantly)
+
+        // Stop button → instant stop on click
+        document.getElementById("stop").addEventListener("click", () => sendCommand("S"));
     });
 </script>
 </body>
 </html>
+
 
