@@ -16,7 +16,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     header {
@@ -28,7 +28,7 @@
     }
 
     header img {
-      height: 75px; /* 55px + 20px */
+      height: 75px;
       width: auto;
     }
 
@@ -54,7 +54,7 @@
     }
 
     button.connect-btn {
-      margin: 10px auto;
+      margin: 10px auto 25px auto;
       padding: 14px 30px;
       font-size: 15px;
       font-weight: 600;
@@ -79,8 +79,8 @@
       grid-template-rows: 80px 80px 80px;
       justify-content: center;
       align-items: center;
-      margin: 20px 0;
       gap: 10px;
+      margin-bottom: 40px; /* Space above footer */
     }
 
     .btn {
@@ -112,16 +112,20 @@
     }
 
     footer {
-      background: #fff;
-      padding: 15px;
-      border-top: 2px solid #ccc;
+      background: #333;
+      color: white;
+      padding: 20px;
       font-size: 14px;
-      text-align: center;
-      line-height: 1.6;
+      line-height: 1.8;
+      border-top: 4px solid #222;
+    }
+
+    footer p {
+      margin: 6px 0;
     }
 
     footer a {
-      color: #4A6CF7;
+      color: #FFD93D;
       font-weight: 600;
       text-decoration: none;
     }
